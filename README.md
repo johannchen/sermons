@@ -1,2 +1,0 @@
-# sermons
-SAGOS Sermons
