@@ -1,5 +1,13 @@
-import { Meteor } from 'meteor/meteor';
+import { createApolloServer } from 'meteor/apollo';
+import { makeExecutableSchema } from 'graphql-tools';
 
-Meteor.startup(() => {
-  // code to run on server at startup
+import { typeDefs, resolvers } from '/imports/api/schema';
+
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers
+});
+
+createApolloServer({
+  schema,
 });
