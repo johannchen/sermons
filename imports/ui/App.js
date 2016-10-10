@@ -1,96 +1,29 @@
-import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
-import { Meteor } from 'meteor/meteor';
-import { createContainer } from 'meteor/react-meteor-data';
-//import { LoginButtons } from 'meteor/okgrow:accounts-ui-react';
-import gql from 'graphql-tag';
+import React from 'react';
 
-//import {Verses} from '/imports/api/collections';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
+import Menu from './Menu';
 
-/*
-Accounts.ui.config({
-  passwordSignupFields: 'USERNAME_ONLY'
-});
-*/
-//<LoginButtons visible />
-const App = ({verse, refetch, update }) => (
-  <div>
-    {verse ? (
+export default class App extends React.Component {
+  getChildContext() {
+    return {muiTheme: getMuiTheme(lightBaseTheme)};
+  }
+
+  render() {
+    return (
       <div>
-        {verse.title}
-        <button onClick={() => refetch()}>Refetch!</button>
-        <button onClick={() => update('John 1:4')}>Update</button>
+        <Menu />
+        {this.props.children}
       </div>
-    ) : 'no verse loaded'}
-  </div>
-);
+    );
+  }
+}
 
-App.propTypes = {
-  //verseId: React.PropTypes.string.isRequired,
-  verse: React.PropTypes.object,
-  refetch: React.PropTypes.func,
-  update: React.PropTypes.func,
+App.childContextTypes = {
+  muiTheme: React.PropTypes.object.isRequired,
 };
 
-/*
-const GET_VERSE_DATA = gql`
-  query ($id: String!) {
-    verse(id: $id) {
-      title
-    }
-  }
-`;
-*/
-const VERSE_DATA = gql`
-  query {
-    verse {
-      title
-    }
-  }
-`;
-
-const MUTATE_TITLE = gql`
-  mutation updateTitle($title: String!) {
-    updateTitle(title: $title)
-  }
-`;
-
-const withData = graphql(VERSE_DATA, {
-  props: ({ data: { error, loading, verse, refetch } }) => {
-    if (loading) return { verseLoading: true };
-    if (error) return { hasErrors: true };
-    return {
-      verse,
-      refetch,
-    };
-  },
-  /*
-  options: (ownProps) => (
-    { variables: { id: ownProps.verseId} }
-  ),
-  */
-});
-
-const withMutation = graphql(MUTATE_TITLE, {
-  props: ({mutate}) => {
-    return {
-      update(title) {
-        return mutate({variables: {title}});
-      },
-    };
-  },
-})
-
-const AppWithData = withData(App);
-const AppWithDataAndMutation = withMutation(AppWithData);
-
-// This container brings in Tracker-enabled Meteor data
-/*
-const AppWithVerseId = createContainer(() => {
-  return {
-    verseId: Verses.findOne()._id || '',
-  };
-}, AppWithData);
-*/
-export default AppWithDataAndMutation;
+App.propTypes = {
+}

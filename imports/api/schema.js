@@ -1,18 +1,19 @@
-import {Verses} from '/imports/api/collections';
+import {Posts} from '/imports/api/collections';
 
 // why array and string?
-//verse(id: String!): Verse
 export const typeDefs = [`
-type Verse {
-  title: String
+type Post {
+  _id: String,
+  title: String,
+  content: String,
 }
 
 type Query {
-  verse: Verse
+  post(id: String!): Post
 }
 
 type Mutation {
-  updateTitle(title: String!): String
+  submitPost(title: String!, content: String!): String,
 }
 
 schema {
@@ -22,16 +23,16 @@ schema {
 `];
 
 // async await?
-// root?
+// root, args, context are standard param of graphql resolve function
 export const resolvers = {
   Query: {
-    async verse(root, args, context) {
-      return await Verses.findOne();
+    async post(root, args, context) {
+      return await Posts.findOne(args.id);
     },
   },
   Mutation: {
-    async updateTitle(root, {title}) {
-      return Verses.update({}, {$set: {title}});
+    async submitPost(_, {title, content}) {
+      return await Posts.insert({title, content});
     }
   }
 }
