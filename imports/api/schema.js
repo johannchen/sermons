@@ -9,7 +9,8 @@ type Post {
 }
 
 type Query {
-  post(id: String!): Post
+  post(id: String!): Post,
+  posts: [Post]
 }
 
 type Mutation {
@@ -28,6 +29,9 @@ export const resolvers = {
   Query: {
     async post(root, args, context) {
       return await Posts.findOne(args.id);
+    },
+    async posts(root, args, context) {
+      return await Posts.find().fetch();
     },
   },
   Mutation: {

@@ -17,14 +17,12 @@ class PostForm extends Component {
     const content = this.refs.content.getValue();
     this.props.submit(title, content).then((res) => {
       console.log(res);
-      /*
       if(!res.errors) {
         browserHistory.push('/');
       } else {
         // display errors
         console.log(res.errors);
       }
-      */
     });
   }
 
