@@ -1,6 +1,40 @@
 import {Posts} from '/imports/api/collections';
 
 // why array and string?
+// megadraft schema
+/*
+type Range {
+  offset: Int,
+  length: Int,
+  key: Int,
+}
+
+type BlockData {
+  type: String,
+  src: String,
+  caption: String,
+  rightsHolder: String,
+  display: String,
+}
+
+type ContentBlock {
+  key: String,
+  text: String,
+  type: String,
+  depth: Int,
+  inlineStyleRanges: [Range],
+  entityRanges: [Range],
+  data: BlockData,
+}
+
+type Content {
+  blocks: [ContentBlock]
+}
+
+input ContentInput {
+  blocks: [ContentBlock]
+}
+*/
 export const typeDefs = [`
 type Post {
   _id: String,
@@ -14,7 +48,7 @@ type Query {
 }
 
 type Mutation {
-  submitPost(id: String, title: String!, content: String!): Post,
+  submitPost(id: String, title: String!, content: String): Post,
 }
 
 schema {

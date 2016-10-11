@@ -12,6 +12,7 @@
     "graphql": "^0.7.1",
     "graphql-tools": "^0.7.2",
     "material-ui": "^0.16.0",
+    "megadraft": "^0.3.3",
     "meteor-node-stubs": "^0.2.3",
     "react": "^15.3.2",
     "react-addons-pure-render-mixin": "^15.3.2",

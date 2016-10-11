@@ -9,7 +9,7 @@ const PostList = ({loading, posts, refetch}) => {
     <div>
       { loading ? 'loading' :
         <div>
-          {posts.map(post => <Post key={post._id} post={post} />)}
+          {posts ? posts.map(post => <Post key={post._id} post={post} />) : "No post found."}
           <button onClick={() => refetch()}>Refetch!</button>
         </div>
       }

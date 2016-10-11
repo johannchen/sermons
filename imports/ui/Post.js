@@ -3,6 +3,8 @@ import {browserHistory} from 'react-router';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import {MegadraftEditor, editorStateFromRaw} from 'megadraft';
+
 
 const Post = ({post}) => (
   <Card>
@@ -10,7 +12,10 @@ const Post = ({post}) => (
       title={post.title}
     />
     <CardText>
-      {post.content}
+      <MegadraftEditor
+        editorState={editorStateFromRaw(JSON.parse(post.content))}
+        readOnly={true}
+      />
     </CardText>
     <CardActions>
       <FlatButton label="Edit" onTouchTap={

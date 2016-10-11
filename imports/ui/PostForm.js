@@ -6,20 +6,38 @@ import {browserHistory} from 'react-router';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import {MegadraftEditor, editorStateFromRaw, editorStateToJSON} from 'megadraft';
+
+//import {upsertPost} from '/imports/api/methods';
 
 class PostForm extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {editorState: editorStateFromRaw(null)};
+    this.onChange = this.onChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.post) {
+      this.setState({
+        editorState: editorStateFromRaw(JSON.parse(nextProps.post.content))
+      });
+    }
+  }
+
+  onChange(editorState) {
+    this.setState({editorState});
   }
 
   submitForm() {
     const id = this.props.params.id;
-    console.log(id);
     const title = this.refs.title.input.value;
-    const content = this.refs.content.getValue();
+    const content = editorStateToJSON(this.state.editorState);
+    //console.log(this.state.editorState);
+    //console.log(content);
+    //upsertPost.call({postId, title, content});
     this.props.submit(id, title, content).then((res) => {
-      console.log(res);
       if(!res.errors) {
         browserHistory.push('/');
       } else {
@@ -32,19 +50,22 @@ class PostForm extends Component {
   render() {
     const {loading} = this.props;
     let post = this.props.post || {};
+    const style = {paddingLeft: 60, paddingBottom: 20};
     return (
       <div>
       { loading ? '' :
-        <Paper zDepth={3}>
-          <TextField hintText="Title" ref="title" defaultValue={post.title} />
-          <br />
+        <Paper style={style} zDepth={3}>
           <TextField
-            ref="content"
-            defaultValue={post.content}
-            floatingLabelText="Content"
-            multiLine={true}
-            rows={3}
-           />
+            hintText="Title"
+            floatingLabelText="Title"
+            defaultValue={post.title}
+            ref="title"
+          />
+          <br />
+          <MegadraftEditor
+            placeholder="Please write here, (you can format the text by highlight it)"
+            editorState={this.state.editorState}
+            onChange={this.onChange} />
           <br />
           <RaisedButton label="Submit" primary={true} onTouchTap={this.submitForm}/>
           <br />
@@ -73,22 +94,23 @@ const GET_POST = gql`
 `;
 
 const SUBMIT_POST = gql`
-  mutation submitPost($id: String, $title: String!, $content: String!) {
+  mutation submitPost($id: String, $title: String!, $content: String) {
     submitPost(id: $id, title: $title, content: $content) {
       _id,
       title,
-      content,
+      content
     }
   }
 `;
 
 // ownProps can be passed from router and meteor data
+// skip query if no param id
 const PostFormWithData = graphql(GET_POST, {
   props: ({data: {loading, post}}) => {
     return {loading, post};
   },
   options: (ownProps) => (
-    {variables: {id: ownProps.params.id}}
+    {variables: {id: ownProps.params.id, skip: !ownProps.params.id}}
   ),
 })(PostForm);
 
@@ -101,5 +123,4 @@ const PostFormWithDataAndMutation = graphql(SUBMIT_POST, {
     }
   }
 })(PostFormWithData);
-
 export default PostFormWithDataAndMutation;
