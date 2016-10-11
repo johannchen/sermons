@@ -14,7 +14,7 @@ type Query {
 }
 
 type Mutation {
-  submitPost(title: String!, content: String!): String,
+  submitPost(id: String, title: String!, content: String!): Post,
 }
 
 schema {
@@ -35,8 +35,9 @@ export const resolvers = {
     },
   },
   Mutation: {
-    async submitPost(_, {title, content}) {
-      return await Posts.insert({title, content});
+    async submitPost(_, {id, title, content}) {
+      await Posts.upsert(id, {$set: {title, content}});
+      return Posts.findOne(id);
     }
   }
 }

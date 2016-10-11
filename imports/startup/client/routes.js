@@ -11,7 +11,8 @@ export default class Routes extends Component {
       <Router history={browserHistory}>
         <Route component={App}>
           <Route path="/" component={PostList} />
-          <Route path="/new" component={PostForm} />
+          <Route path="/posts/new" component={PostForm} />
+          <Route path="/posts/:id/edit" component={PostForm} />
         </Route>
       </Router>
     );
