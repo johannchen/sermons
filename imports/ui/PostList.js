@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import {browserHistory} from 'react-router';
+
+import RaisedButton from 'material-ui/RaisedButton';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
 import Post from './Post';
 
@@ -9,6 +13,13 @@ const PostList = ({loading, posts, refetch}) => {
     <div>
       { loading ? 'loading' :
         <div>
+          <Toolbar>
+            <ToolbarGroup firstChild={true}>
+              <RaisedButton label="New Post" onTouchTap={
+                  () => browserHistory.push("/posts/new")
+                } />
+            </ToolbarGroup>
+          </Toolbar>
           {posts ? posts.map(post => <Post key={post._id} post={post} />) : "No post found."}
           <button onClick={() => refetch()}>Refetch!</button>
         </div>

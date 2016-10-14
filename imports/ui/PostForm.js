@@ -33,11 +33,11 @@ class PostForm extends Component {
   submitForm() {
     const id = this.props.params.id;
     const title = this.refs.title.input.value;
+    const scripture = this.refs.scripture.input.value;
+    const tags = this.refs.tags.input.value;
     const content = editorStateToJSON(this.state.editorState);
-    //console.log(this.state.editorState);
-    //console.log(content);
     //upsertPost.call({postId, title, content});
-    this.props.submit(id, title, content).then((res) => {
+    this.props.submit(id, title, scripture, tags, content).then((res) => {
       if(!res.errors) {
         browserHistory.push('/');
       } else {
@@ -56,14 +56,28 @@ class PostForm extends Component {
       { loading ? '' :
         <Paper style={style} zDepth={3}>
           <TextField
-            hintText="Title"
-            floatingLabelText="Title"
+            hintText="標題"
+            floatingLabelText="標題"
             defaultValue={post.title}
             ref="title"
           />
           <br />
+          <TextField
+            hintText="經文"
+            floatingLabelText="經文"
+            defaultValue={post.scripture}
+            ref="scripture"
+          />
+          <br />
+          <TextField
+            hintText="標記"
+            floatingLabelText="標記"
+            defaultValue={post.tags}
+            ref="tags"
+          />
+          <br />
           <MegadraftEditor
-            placeholder="Please write here, (you can format the text by highlight it)"
+            placeholder="請寫文章"
             editorState={this.state.editorState}
             onChange={this.onChange} />
           <br />
@@ -88,16 +102,20 @@ const GET_POST = gql`
     post(id: $id) {
       _id,
       title,
+      scripture,
+      tags,
       content,
     }
   }
 `;
 
 const SUBMIT_POST = gql`
-  mutation submitPost($id: String, $title: String!, $content: String) {
-    submitPost(id: $id, title: $title, content: $content) {
+  mutation submitPost($id: String, $title: String!, $scripture: String, $tags: String, $content: String) {
+    submitPost(id: $id, title: $title, scripture: $scripture, tags: $tags, content: $content) {
       _id,
       title,
+      scripture,
+      tags,
       content
     }
   }
@@ -117,8 +135,8 @@ const PostFormWithData = graphql(GET_POST, {
 const PostFormWithDataAndMutation = graphql(SUBMIT_POST, {
   props: ({mutate}) => {
     return {
-      submit(id, title, content) {
-        return mutate({variables: {id, title, content}});
+      submit(id, title, scripture, tags, content) {
+        return mutate({variables: {id, title, scripture, tags, content}});
       }
     }
   }

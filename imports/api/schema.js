@@ -39,6 +39,8 @@ export const typeDefs = [`
 type Post {
   _id: String,
   title: String,
+  scripture: String,
+  tags: String,
   content: String,
 }
 
@@ -48,7 +50,7 @@ type Query {
 }
 
 type Mutation {
-  submitPost(id: String, title: String!, content: String): Post,
+  submitPost(id: String, title: String!, scripture: String, tags: String, content: String): Post,
 }
 
 schema {
@@ -69,8 +71,11 @@ export const resolvers = {
     },
   },
   Mutation: {
-    async submitPost(_, {id, title, content}) {
-      await Posts.upsert(id, {$set: {title, content}});
+    async submitPost(root, {id, title, scripture, tags, content}) {
+      let post = {title, scripture, tags, content};
+      id ? post.updatedAt = new Date() : post.createdAt = new Date();
+      await Posts.upsert(id, {$set: post});
+      // if insert, then return nothing
       return Posts.findOne(id);
     }
   }
