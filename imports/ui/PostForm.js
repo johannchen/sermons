@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper';
 import {MegadraftEditor, editorStateFromRaw, editorStateToJSON} from 'megadraft';
 
 //import {upsertPost} from '/imports/api/methods';
-
+// TODO: auto complete scripture, tags
 class PostForm extends Component {
   constructor(props) {
     super(props);

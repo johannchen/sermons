@@ -21,6 +21,9 @@ const Post = ({post}) => (
       <FlatButton label="Edit" onTouchTap={
         () => browserHistory.push(`/posts/${post._id}/edit`)
       }/>
+      <FlatButton label="Read More" onTouchTap={
+        () => browserHistory.push(`/posts/${post._id}`)
+      }/>
     </CardActions>
   </Card>
 );
