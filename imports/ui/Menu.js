@@ -1,6 +1,8 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 //import {Roles} from 'meteor/alanning:roles';
+import { LoginButtons } from 'meteor/okgrow:accounts-ui-react';
+
 
 import {green600} from 'material-ui/styles/colors';
 //import {orange800} from 'material-ui/styles/colors';
@@ -53,11 +55,11 @@ class Menu extends React.Component {
       <div id="menu">
         <AppBar
           title={title}
-          onTitleTouchTap={this.goHome}
+          onTitleTouchTap={this.goHome.bind(this)}
           style={bgColor}
           onLeftIconButtonTouchTap={this.handleOpen.bind(this)}
           iconElementRight={
-            <FlatButton label="登錄" />}
+            <LoginButtons />}
         />
         <Drawer
           docked={false}

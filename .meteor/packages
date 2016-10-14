@@ -22,3 +22,5 @@ react-meteor-data
 blaze-html-templates@1.0.4
 mdg:validated-method
 aldeed:simple-schema
+okgrow:accounts-ui-react
+accounts-password
