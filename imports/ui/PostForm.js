@@ -41,8 +41,9 @@ class PostForm extends Component {
     const content = editorStateToJSON(this.state.editorState);
     //upsertPost.call({postId, title, content});
     this.props.submit(id, title, scripture, tags, content).then((res) => {
+      console.log(res);
       if(!res.errors) {
-        browserHistory.push('/');
+        browserHistory.push(`/posts/${res.data.submitPost._id}`);
       } else {
         // display errors
         console.log(res.errors);
@@ -70,6 +71,7 @@ class PostForm extends Component {
             hintText="經文"
             floatingLabelText="經文"
             dataSource={BIBLE}
+            searchText={post.scripture}
             ref="scripture"
           />
           <br />

@@ -74,9 +74,10 @@ export const resolvers = {
     async submitPost(root, {id, title, scripture, tags, content}) {
       let post = {title, scripture, tags, content};
       id ? post.updatedAt = new Date() : post.createdAt = new Date();
-      await Posts.upsert(id, {$set: post});
+      let result = Posts.upsert(id, {$set: post});
       // if insert, then return nothing
-      return Posts.findOne(id);
+      let postId = result.insertedId || id;
+      return Posts.findOne(postId);
     }
   }
 }
