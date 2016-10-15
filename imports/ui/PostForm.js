@@ -7,6 +7,9 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 import {MegadraftEditor, editorStateFromRaw, editorStateToJSON} from 'megadraft';
+import AutoComplete from 'material-ui/AutoComplete';
+
+import {BIBLE} from './constants';
 
 //import {upsertPost} from '/imports/api/methods';
 // TODO: auto complete scripture, tags
@@ -33,7 +36,7 @@ class PostForm extends Component {
   submitForm() {
     const id = this.props.params.id;
     const title = this.refs.title.input.value;
-    const scripture = this.refs.scripture.input.value;
+    const scripture = this.refs.scripture.state.searchText;
     const tags = this.refs.tags.input.value;
     const content = editorStateToJSON(this.state.editorState);
     //upsertPost.call({postId, title, content});
@@ -47,6 +50,7 @@ class PostForm extends Component {
     });
   }
 
+  //             defaultValue={post.scripture}
   render() {
     const {loading} = this.props;
     let post = this.props.post || {};
@@ -62,10 +66,10 @@ class PostForm extends Component {
             ref="title"
           />
           <br />
-          <TextField
+          <AutoComplete
             hintText="經文"
             floatingLabelText="經文"
-            defaultValue={post.scripture}
+            dataSource={BIBLE}
             ref="scripture"
           />
           <br />
