@@ -8,23 +8,40 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 import {MegadraftEditor, editorStateFromRaw, editorStateToJSON} from 'megadraft';
 import AutoComplete from 'material-ui/AutoComplete';
+import Chip from 'material-ui/Chip';
 
 import {BIBLE} from './constants';
 
 //import {upsertPost} from '/imports/api/methods';
-// TODO: auto complete scripture, tags
+// TODO: add tags as chips
 class PostForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: editorStateFromRaw(null)};
+    this.state = {
+      editorState: editorStateFromRaw(null),
+      tag: '',
+      tags: [],
+    };
+    this.tagStyles = {
+      chip: {
+        margin: 4,
+      },
+      wrapper: {
+        display: 'flex',
+        flexWrap: 'wrap',
+      },
+    };
     this.onChange = this.onChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.handleAddTag = this.handleAddTag.bind(this);
+    this.handleRequestDeleteTag = this.handleRequestDeleteTag.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.post) {
       this.setState({
-        editorState: editorStateFromRaw(JSON.parse(nextProps.post.content))
+        editorState: editorStateFromRaw(JSON.parse(nextProps.post.content)),
+        tags: nextProps.post.tags || [],
       });
     }
   }
@@ -33,11 +50,25 @@ class PostForm extends Component {
     this.setState({editorState});
   }
 
+  handleAddTag() {
+    let {tags, tag} = this.state;
+    tags.push(tag);
+    this.setState({
+      tag: '',
+      tags,
+    });
+  }
+
+  handleRequestDeleteTag(index) {
+    let {tags} = this.state;
+    tags.splice(tags.indexOf(index), 1);
+    this.setState({tags});
+  }
+
   submitForm() {
     const id = this.props.params.id;
     const title = this.refs.title.input.value;
     const scripture = this.refs.scripture.state.searchText;
-    const tags = this.refs.tags.input.value;
     const content = editorStateToJSON(this.state.editorState);
     //upsertPost.call({postId, title, content});
     this.props.submit(id, title, scripture, tags, content).then((res) => {
@@ -76,11 +107,27 @@ class PostForm extends Component {
           />
           <br />
           <TextField
-            hintText="標記"
-            floatingLabelText="標記"
-            defaultValue={post.tags}
-            ref="tags"
+            hintText="加標記"
+            floatingLabelText="加標記"
+            value={this.state.tag}
+            onChange={(e) => this.setState({tag: e.target.value})}
+            onKeyDown={
+              (e) => e.key === 'Enter' ? this.handleAddTag() : null
+            }
           />
+          <div style={this.tagStyles.wrapper}>
+            {this.state.tags.map((tag, index) => (
+              <Chip
+                key={index}
+                onRequestDelete={() => this.handleRequestDeleteTag(index)}
+                style={this.tagStyles.chip}
+              >
+                {tag}
+              </Chip>
+            ))}
+          </div>
+
+          <br />
           <br />
           <MegadraftEditor
             placeholder="請寫文章"
