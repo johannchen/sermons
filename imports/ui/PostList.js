@@ -9,11 +9,11 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 import TextField from 'material-ui/TextField';
 
 import Post from './Post';
-import {searchPosts} from './actions';
+import {searchPosts, fetchAllPosts} from './actions';
 
 //TODO: show first paragraph
 //TODO: search post, tags, content
-const PostList = ({loading, posts, refetch, search, term}) => {
+const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
   return (
     <div>
       { loading ? 'loading' :
@@ -30,8 +30,8 @@ const PostList = ({loading, posts, refetch, search, term}) => {
               <ToolbarTitle text={`Total: ${posts.length}`} />
             </ToolbarGroup>
             <ToolbarGroup>
-              <RaisedButton label="Refetch" onTouchTap={
-                  () => refetch()
+              <RaisedButton label="Fetch All" onTouchTap={
+                  () => fetchAll()
                 } />
             </ToolbarGroup>
           </Toolbar>
@@ -45,6 +45,7 @@ const PostList = ({loading, posts, refetch, search, term}) => {
 PostList.propTypes = {
   posts: React.PropTypes.array,
   refetch: React.PropTypes.func,
+  fetchAll: React.PropTypes.func,
   search: React.PropTypes.func,
   term: React.PropTypes.string,
 };
@@ -70,9 +71,11 @@ const PostListWithData = graphql(GET_POSTS_DATA, {
     };
   },
   //this can omit if prop and variable has the same name
+  /*
   options: (ownProps) => (
     {variables: {term: ownProps.term}}
   ),
+  */
 })(PostList);
 
 // connect mapStateToProps, mapDispatchToProps
@@ -81,6 +84,9 @@ const PostListWithDataAndState = connect(
   (dispatch) => ({
     search(term) {
       dispatch(searchPosts(term))
+    },
+    fetchAll() {
+      dispatch(fetchAllPosts())
     }
   }),
 )(PostListWithData)
