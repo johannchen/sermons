@@ -12,7 +12,7 @@ import Post from './Post';
 import {searchPosts} from './actions';
 
 //TODO: show first paragraph
-//TODO: search post
+//TODO: search post, tags, content
 const PostList = ({loading, posts, refetch, search, term}) => {
   return (
     <div>
@@ -20,16 +20,16 @@ const PostList = ({loading, posts, refetch, search, term}) => {
         <div>
           <Toolbar>
             <ToolbarGroup firstChild={true}>
-              <TextField hintText="Search"
-                ref="search"
-                onKeyDown={
-                  (e) => e.key === 'Enter' ? search({term: e.target.value}) : null
-                }/>
-            </ToolbarGroup>
-            <ToolbarGroup>
               <RaisedButton label="New Post" onTouchTap={
                   () => browserHistory.push("/posts/new")
                 } />
+              <TextField hintText="Search"
+                onKeyDown={
+                  (e) => e.key === 'Enter' ? search({term: e.target.value}) : null
+                }/>
+              <ToolbarTitle text={`Total: ${posts.length}`} />
+            </ToolbarGroup>
+            <ToolbarGroup>
               <RaisedButton label="Refetch" onTouchTap={
                   () => refetch()
                 } />
@@ -69,6 +69,10 @@ const PostListWithData = graphql(GET_POSTS_DATA, {
       refetch,
     };
   },
+  //this can omit if prop and variable has the same name
+  options: (ownProps) => (
+    {variables: {term: ownProps.term}}
+  ),
 })(PostList);
 
 // connect mapStateToProps, mapDispatchToProps

@@ -6,16 +6,19 @@ import FlatButton from 'material-ui/FlatButton';
 import {MegadraftEditor, editorStateFromRaw} from 'megadraft';
 
 
+/*
+<MegadraftEditor
+  editorState={editorStateFromRaw(JSON.parse(post.content))}
+  readOnly={true}
+/>
+*/
 const Post = ({post}) => (
   <Card>
     <CardTitle
       title={post.title}
     />
     <CardText>
-      <MegadraftEditor
-        editorState={editorStateFromRaw(JSON.parse(post.content))}
-        readOnly={true}
-      />
+      <p>{JSON.parse(post.content).blocks[0].text}</p>
     </CardText>
     <CardActions>
       <FlatButton label="Edit" onTouchTap={
