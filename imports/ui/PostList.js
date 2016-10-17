@@ -20,7 +20,8 @@ const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
         <div>
           <Toolbar>
             <ToolbarGroup firstChild={true}>
-              <RaisedButton label="New Post" onTouchTap={
+              <RaisedButton label="New Post"
+                onTouchTap={
                   () => browserHistory.push("/posts/new")
                 } />
               <TextField hintText="Search"
@@ -31,8 +32,11 @@ const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
             </ToolbarGroup>
             <ToolbarGroup>
               <RaisedButton label="Fetch All" onTouchTap={
-                  () => fetchAll()
-                } />
+                () => {
+                  fetchAll();
+                  refetch();
+                }
+              } />
             </ToolbarGroup>
           </Toolbar>
           {posts ? posts.map(post => <Post key={post._id} post={post} />) : "No post found."}
