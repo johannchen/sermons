@@ -13,7 +13,7 @@ import Chip from 'material-ui/Chip';
 import {BIBLE} from './constants';
 
 //import {upsertPost} from '/imports/api/methods';
-// TODO: add tags as chips
+// TODO: autocomplete tag
 class PostForm extends Component {
   constructor(props) {
     super(props);
@@ -69,10 +69,11 @@ class PostForm extends Component {
     const id = this.props.params.id;
     const title = this.refs.title.input.value;
     const scripture = this.refs.scripture.state.searchText;
+    const tags = this.state.tags;
     const content = editorStateToJSON(this.state.editorState);
     //upsertPost.call({postId, title, content});
     this.props.submit(id, title, scripture, tags, content).then((res) => {
-      console.log(res);
+      //console.log(res);
       if(!res.errors) {
         browserHistory.push(`/posts/${res.data.submitPost._id}`);
       } else {
@@ -163,7 +164,7 @@ const GET_POST = gql`
 `;
 
 const SUBMIT_POST = gql`
-  mutation submitPost($id: String, $title: String!, $scripture: String, $tags: String, $content: String) {
+  mutation submitPost($id: String, $title: String!, $scripture: String, $tags: [String], $content: String) {
     submitPost(id: $id, title: $title, scripture: $scripture, tags: $tags, content: $content) {
       _id,
       title,

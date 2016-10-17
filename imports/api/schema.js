@@ -40,7 +40,7 @@ type Post {
   _id: String,
   title: String,
   scripture: String,
-  tags: String,
+  tags: [String],
   content: String,
 }
 
@@ -50,7 +50,7 @@ type Query {
 }
 
 type Mutation {
-  submitPost(id: String, title: String!, scripture: String, tags: String, content: String): Post,
+  submitPost(id: String, title: String!, scripture: String, tags: [String], content: String): Post,
 }
 
 schema {
