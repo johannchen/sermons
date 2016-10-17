@@ -1,27 +1,36 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Meteor } from 'meteor/meteor';
-//import { Provider } from 'react-redux';
 
 import ApolloClient from 'apollo-client';
 import { meteorClientConfig } from 'meteor/apollo';
 import { ApolloProvider } from 'react-apollo';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 
 // how to config client?
 const client = new ApolloClient(meteorClientConfig());
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-//import store from './store';
 import Routes from './routes';
 
-/* use redux with apollo?
-<Provider store={store}>
-</Provider>
+import {postReducer} from './reducers';
 
-*/
+const store = createStore(
+  combineReducers({
+    posts: postReducer,
+    apollo: client.reducer(),
+  }),
+  {}, // initial state
+  compose(
+      applyMiddleware(client.middleware()),
+      // If you are using the devToolsExtension, you can add it here also
+      window.devToolsExtension ? window.devToolsExtension() : f => f,
+  )
+);
+
 const AppRoot = () => (
-  <ApolloProvider client={client}>
+  <ApolloProvider store={store} client={client}>
     <Routes />
   </ApolloProvider>,
 );

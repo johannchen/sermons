@@ -12,7 +12,7 @@ const PostDetails = ({loading, post}) => (
   <div>
     {loading ? 'loading' :
       <Card>
-        <CardHeader
+        <CardTitle
           title={post.title}
           subtitle={`${post.scripture} ${post.tags}`}
         />

@@ -2,26 +2,40 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import {browserHistory} from 'react-router';
+import { connect } from 'react-redux';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import TextField from 'material-ui/TextField';
 
 import Post from './Post';
+import {searchPosts} from './actions';
 
-const PostList = ({loading, posts, refetch}) => {
+//TODO: show first paragraph
+//TODO: search post
+const PostList = ({loading, posts, refetch, search, term}) => {
   return (
     <div>
       { loading ? 'loading' :
         <div>
           <Toolbar>
             <ToolbarGroup firstChild={true}>
+              <TextField hintText="Search"
+                ref="search"
+                onKeyDown={
+                  (e) => e.key === 'Enter' ? search({term: e.target.value}) : null
+                }/>
+            </ToolbarGroup>
+            <ToolbarGroup>
               <RaisedButton label="New Post" onTouchTap={
                   () => browserHistory.push("/posts/new")
+                } />
+              <RaisedButton label="Refetch" onTouchTap={
+                  () => refetch()
                 } />
             </ToolbarGroup>
           </Toolbar>
           {posts ? posts.map(post => <Post key={post._id} post={post} />) : "No post found."}
-          <button onClick={() => refetch()}>Refetch!</button>
         </div>
       }
     </div>
@@ -31,13 +45,17 @@ const PostList = ({loading, posts, refetch}) => {
 PostList.propTypes = {
   posts: React.PropTypes.array,
   refetch: React.PropTypes.func,
+  search: React.PropTypes.func,
+  term: React.PropTypes.string,
 };
 
 const GET_POSTS_DATA = gql`
-  query {
-    posts {
+  query ($term: String){
+    posts(term: $term){
       _id,
       title,
+      scripture,
+      tags,
       content,
     }
   }
@@ -53,4 +71,14 @@ const PostListWithData = graphql(GET_POSTS_DATA, {
   },
 })(PostList);
 
-export default PostListWithData;
+// connect mapStateToProps, mapDispatchToProps
+const PostListWithDataAndState = connect(
+  (state) => ({term: state.posts.term}),
+  (dispatch) => ({
+    search(term) {
+      dispatch(searchPosts(term))
+    }
+  }),
+)(PostListWithData)
+
+export default PostListWithDataAndState;

@@ -8,7 +8,7 @@ import {MegadraftEditor, editorStateFromRaw} from 'megadraft';
 
 const Post = ({post}) => (
   <Card>
-    <CardHeader
+    <CardTitle
       title={post.title}
     />
     <CardText>

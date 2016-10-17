@@ -76,6 +76,7 @@ class PostForm extends Component {
       //console.log(res);
       if(!res.errors) {
         browserHistory.push(`/posts/${res.data.submitPost._id}`);
+        //browserHistory.push('/');
       } else {
         // display errors
         console.log(res.errors);
@@ -170,7 +171,7 @@ const SUBMIT_POST = gql`
       title,
       scripture,
       tags,
-      content
+      content,
     }
   }
 `;

@@ -46,7 +46,7 @@ type Post {
 
 type Query {
   post(id: String!): Post,
-  posts: [Post]
+  posts(term: String): [Post]
 }
 
 type Mutation {
@@ -67,7 +67,7 @@ export const resolvers = {
       return await Posts.findOne(args.id);
     },
     async posts(root, args, context) {
-      return await Posts.find().fetch();
+      return await Posts.find({title: new RegExp(args.term,"i")}).fetch();
     },
   },
   Mutation: {
