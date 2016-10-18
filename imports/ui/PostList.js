@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import TextField from 'material-ui/TextField';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import Post from './Post';
 import {searchPosts, fetchAllPosts} from './actions';
@@ -16,7 +17,9 @@ import {searchPosts, fetchAllPosts} from './actions';
 const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
   return (
     <div>
-      { loading ? 'loading' :
+      { loading ?
+        <CircularProgress />
+        :
         <div>
           <Toolbar>
             <ToolbarGroup firstChild={true}>
@@ -25,6 +28,7 @@ const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
                   () => browserHistory.push("/posts/new")
                 } />
               <TextField hintText="Search"
+                defaultValue={term}
                 onKeyDown={
                   (e) => e.key === 'Enter' ? search({term: e.target.value}) : null
                 }/>
@@ -39,7 +43,9 @@ const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
               } />
             </ToolbarGroup>
           </Toolbar>
-          {posts ? posts.map(post => <Post key={post._id} post={post} />) : "No post found."}
+          <div>
+            {posts ? posts.map(post => <Post key={post._id} post={post} />) : <p>No post found.</p>}
+          </div>
         </div>
       }
     </div>
@@ -80,6 +86,11 @@ const PostListWithData = graphql(GET_POSTS_DATA, {
     {variables: {term: ownProps.term}}
   ),
   */
+  options: (ownProps) => {
+    return {
+      forceFetch: true,
+    }
+  }
 })(PostList);
 
 // connect mapStateToProps, mapDispatchToProps

@@ -51,6 +51,7 @@ type Query {
 
 type Mutation {
   submitPost(id: String, title: String!, scripture: String, tags: [String], content: String): Post,
+  removePost(id: String): String,
 }
 
 schema {
@@ -78,6 +79,10 @@ export const resolvers = {
       // if insert, then return nothing
       let postId = result.insertedId || id;
       return Posts.findOne(postId);
+    },
+    async removePost(root, {id}) {
+      Posts.remove(id);
+      return id;
     }
   }
 }

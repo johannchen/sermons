@@ -5,6 +5,7 @@ import {browserHistory} from 'react-router';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import {MegadraftEditor, editorStateFromRaw, editorStateToJSON} from 'megadraft';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -84,9 +85,8 @@ class PostForm extends Component {
     });
   }
 
-  //             defaultValue={post.scripture}
   render() {
-    const {loading} = this.props;
+    const {loading, remove} = this.props;
     let post = this.props.post || {};
     const style = {paddingLeft: 60, paddingBottom: 20};
     return (
@@ -137,6 +137,17 @@ class PostForm extends Component {
             onChange={this.onChange} />
           <br />
           <RaisedButton label="Submit" primary={true} onTouchTap={this.submitForm}/>
+          <FlatButton label="Cancel" onTouchTap={() => browserHistory.push('/')} />
+          {post._id ?
+            <span>
+              <RaisedButton label="Remove" secondary={true} onTouchTap={() => {
+                if (confirm("Are you sure to remove this post?")) {
+                  remove(post._id);
+                  browserHistory.push('/');
+                }
+              }} />
+            </span>
+          : ''}
           <br />
         </Paper>
       }
@@ -147,6 +158,7 @@ class PostForm extends Component {
 
 PostForm.propTypes = {
   submit: React.PropTypes.func,
+  remove: React.PropTypes.func,
   post: React.PropTypes.object,
 }
 // idea: pass post from parent to edit? not good if parent do not have all the fields
@@ -176,6 +188,12 @@ const SUBMIT_POST = gql`
   }
 `;
 
+const REMOVE_POST = gql`
+  mutation removePost($id: String!) {
+    removePost(id: $id)
+  }
+`;
+
 // ownProps can be passed from router and meteor data
 // skip query if no param id
 const PostFormWithData = graphql(GET_POST, {
@@ -183,11 +201,14 @@ const PostFormWithData = graphql(GET_POST, {
     return {loading, post};
   },
   options: (ownProps) => (
-    {variables: {id: ownProps.params.id, skip: !ownProps.params.id}}
+    {
+      variables: {id: ownProps.params.id, },
+      skip: !ownProps.params.id,
+    }
   ),
 })(PostForm);
 
-const PostFormWithDataAndMutation = graphql(SUBMIT_POST, {
+const PostFormWithDataAndSubmit = graphql(SUBMIT_POST, {
   props: ({mutate}) => {
     return {
       submit(id, title, scripture, tags, content) {
@@ -196,4 +217,15 @@ const PostFormWithDataAndMutation = graphql(SUBMIT_POST, {
     }
   }
 })(PostFormWithData);
+
+const PostFormWithDataAndMutation = graphql(REMOVE_POST, {
+  props: ({mutate}) => {
+    return {
+      remove(id) {
+        return mutate({variables: {id}});
+      }
+    }
+  }
+})(PostFormWithDataAndSubmit);
+
 export default PostFormWithDataAndMutation;
