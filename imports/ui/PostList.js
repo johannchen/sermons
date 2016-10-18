@@ -23,19 +23,19 @@ const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
         <div>
           <Toolbar>
             <ToolbarGroup firstChild={true}>
-              <RaisedButton label="New Post"
+              <RaisedButton label="新文章"
                 onTouchTap={
                   () => browserHistory.push("/posts/new")
                 } />
-              <TextField hintText="Search"
+              <TextField hintText="搜索"
                 defaultValue={term}
                 onKeyDown={
                   (e) => e.key === 'Enter' ? search({term: e.target.value}) : null
                 }/>
-              <ToolbarTitle text={`Total: ${posts.length}`} />
+              <ToolbarTitle text={`結果: ${posts.length}`} />
             </ToolbarGroup>
             <ToolbarGroup>
-              <RaisedButton label="Fetch All" onTouchTap={
+              <RaisedButton label="重新加载" onTouchTap={
                 () => {
                   fetchAll();
                   refetch();
@@ -44,7 +44,7 @@ const PostList = ({loading, posts, refetch, fetchAll, search, term}) => {
             </ToolbarGroup>
           </Toolbar>
           <div>
-            {posts ? posts.map(post => <Post key={post._id} post={post} />) : <p>No post found.</p>}
+            {posts ? posts.map(post => <Post key={post._id} post={post} />) : <p>找不到你要的文章.</p>}
           </div>
         </div>
       }

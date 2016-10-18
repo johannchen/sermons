@@ -3,28 +3,21 @@ import {browserHistory} from 'react-router';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import {MegadraftEditor, editorStateFromRaw} from 'megadraft';
 
-
-/*
-<MegadraftEditor
-  editorState={editorStateFromRaw(JSON.parse(post.content))}
-  readOnly={true}
-/>
-*/
 const Post = ({post}) => (
   <Card>
     <CardTitle
       title={post.title}
+      subtitle={`${post.scripture} ${post.tags}`}
     />
     <CardText>
       <p>{JSON.parse(post.content).blocks[0].text}</p>
     </CardText>
     <CardActions>
-      <FlatButton label="Edit" onTouchTap={
+      <FlatButton label="修改" onTouchTap={
         () => browserHistory.push(`/posts/${post._id}/edit`)
       }/>
-      <FlatButton label="Read More" onTouchTap={
+      <FlatButton label="閱讀全文" onTouchTap={
         () => browserHistory.push(`/posts/${post._id}`)
       }/>
     </CardActions>

@@ -136,12 +136,12 @@ class PostForm extends Component {
             editorState={this.state.editorState}
             onChange={this.onChange} />
           <br />
-          <RaisedButton label="Submit" primary={true} onTouchTap={this.submitForm}/>
-          <FlatButton label="Cancel" onTouchTap={() => browserHistory.push('/')} />
+          <RaisedButton label="提交" primary={true} onTouchTap={this.submitForm}/>
+          <FlatButton label="取消" onTouchTap={() => browserHistory.push('/')} />
           {post._id ?
             <span>
-              <RaisedButton label="Remove" secondary={true} onTouchTap={() => {
-                if (confirm("Are you sure to remove this post?")) {
+              <RaisedButton label="刪除" secondary={true} onTouchTap={() => {
+                if (confirm("你真的要刪除這篇文章嗎?")) {
                   remove(post._id);
                   browserHistory.push('/');
                 }
