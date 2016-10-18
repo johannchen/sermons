@@ -68,7 +68,8 @@ export const resolvers = {
       return await Posts.findOne(args.id);
     },
     async posts(root, args, context) {
-      return await Posts.find({title: new RegExp(args.term,"i")}).fetch();
+      let term = new RegExp(args.term,"i");
+      return await Posts.find({$or: [{title: term}, {tags: {$in: [term]}}]}).fetch();
     },
   },
   Mutation: {
